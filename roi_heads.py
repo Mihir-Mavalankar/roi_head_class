@@ -202,8 +202,7 @@ def _onnx_heatmaps_to_keypoints(maps, maps_i, roi_map_width, roi_map_height,widt
 
 
 @torch.jit.script
-def _onnx_heatmaps_to_keypoints_loop(maps, rois, widths_ceil, heights_ceil,
-                                     widths, heights, offset_x, offset_y, num_keypoints):
+def _onnx_heatmaps_to_keypoints_loop(maps, rois, widths_ceil, heights_ceil,widths, heights, offset_x, offset_y, num_keypoints):
     xy_preds = torch.zeros((0, 3, int(num_keypoints)), dtype=torch.float32, device=maps.device)
     end_scores = torch.zeros((0, int(num_keypoints)), dtype=torch.float32, device=maps.device)
 
@@ -478,7 +477,7 @@ def paste_masks_in_image(masks, boxes, img_shape, padding=1):
     return ret
 
 
-class RoIHeads(torch.nn.Module):
+class New_RoIHeads(torch.nn.Module):
     __annotations__ = {
         'box_coder': det_utils.BoxCoder,
         'proposal_matcher': det_utils.Matcher,
