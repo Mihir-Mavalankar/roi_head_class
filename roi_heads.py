@@ -477,7 +477,7 @@ def paste_masks_in_image(masks, boxes, img_shape, padding=1):
     return ret
 
 
-class New_RoIHeads(torch.nn.Module):
+class RoIHeads(torch.nn.Module):
     __annotations__ = {
         'box_coder': det_utils.BoxCoder,
         'proposal_matcher': det_utils.Matcher,
@@ -860,3 +860,7 @@ class New_RoIHeads(torch.nn.Module):
             losses.update(loss_keypoint)
 
         return result, losses
+
+
+class New_RoIHeads(RoIHeads):
+    pass
