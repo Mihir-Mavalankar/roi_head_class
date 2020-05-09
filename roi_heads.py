@@ -14,7 +14,7 @@ from . import _utils as det_utils
 from torch.jit.annotations import Optional, List, Dict, Tuple
 
 
-def fastrcnn_loss(class_logits, box_regression, labels, regression_targets):
+def fastrcnn_loss(class_logits, box_regression,attr_head, labels, regression_targets):
     # type: (Tensor, Tensor, List[Tensor], List[Tensor]) -> Tuple[Tensor, Tensor]
     """
     Computes the loss for Faster R-CNN.
@@ -34,7 +34,7 @@ def fastrcnn_loss(class_logits, box_regression, labels, regression_targets):
     regression_targets = torch.cat(regression_targets, dim=0)
 
     classification_loss = F.cross_entropy(class_logits, labels)
-
+    print(attr_head.shape)
     loss_attr = F.cross_entropy(class_logits, labels)
     # get indices that correspond to the regression targets for
     # the corresponding ground truth labels, to be used with
@@ -746,14 +746,14 @@ class RoIHeads(torch.nn.Module):
 
         box_features = self.box_roi_pool(features, proposals, image_shapes)
         box_features = self.box_head(box_features)
-        class_logits, box_regression = self.box_predictor(box_features)
+        class_logits, box_regression, attr_head = self.box_predictor(box_features)
 
         result = torch.jit.annotate(List[Dict[str, torch.Tensor]], [])
         losses = {}
         if self.training:
             assert labels is not None and regression_targets is not None
             loss_classifier, loss_box_reg, loss_attr = fastrcnn_loss(
-                class_logits, box_regression, labels, regression_targets)
+                class_logits, box_regression, attr_head, labels, regression_targets)
             losses = {
                 "loss_classifier": loss_classifier,
                 "loss_box_reg": loss_box_reg,
