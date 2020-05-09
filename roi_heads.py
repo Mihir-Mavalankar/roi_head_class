@@ -35,6 +35,7 @@ def fastrcnn_loss(class_logits, box_regression, labels, regression_targets):
 
     classification_loss = F.cross_entropy(class_logits, labels)
 
+    loss_attr = F.cross_entropy(labels, labels)
     # get indices that correspond to the regression targets for
     # the corresponding ground truth labels, to be used with
     # advanced indexing
@@ -51,7 +52,7 @@ def fastrcnn_loss(class_logits, box_regression, labels, regression_targets):
     )
     box_loss = box_loss / labels.numel()
 
-    return classification_loss, box_loss
+    return classification_loss, box_loss, loss_attr
 
 
 def maskrcnn_inference(x, labels):
@@ -751,12 +752,12 @@ class RoIHeads(torch.nn.Module):
         losses = {}
         if self.training:
             assert labels is not None and regression_targets is not None
-            loss_classifier, loss_box_reg = fastrcnn_loss(
+            loss_classifier, loss_box_reg, loss_attr = fastrcnn_loss(
                 class_logits, box_regression, labels, regression_targets)
             losses = {
                 "loss_classifier": loss_classifier,
                 "loss_box_reg": loss_box_reg,
-                "loss_attr": 0
+                "loss_attr": loss_attr
             }
         else:
             boxes, scores, labels = self.postprocess_detections(class_logits, box_regression, proposals, image_shapes)
