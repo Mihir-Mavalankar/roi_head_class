@@ -758,6 +758,7 @@ class RoIHeads(torch.nn.Module):
                 "loss_box_reg": loss_box_reg,
                 "loss_attr": 0
             }
+            print(blah)
         else:
             boxes, scores, labels = self.postprocess_detections(class_logits, box_regression, proposals, image_shapes)
             num_images = len(boxes)
