@@ -755,7 +755,8 @@ class RoIHeads(torch.nn.Module):
                 class_logits, box_regression, labels, regression_targets)
             losses = {
                 "loss_classifier": loss_classifier,
-                "loss_box_reg": loss_box_reg
+                "loss_box_reg": loss_box_reg,
+                "loss_attr": 0
             }
         else:
             boxes, scores, labels = self.postprocess_detections(class_logits, box_regression, proposals, image_shapes)
@@ -860,7 +861,3 @@ class RoIHeads(torch.nn.Module):
             losses.update(loss_keypoint)
 
         return result, losses
-
-
-class New_RoIHeads(RoIHeads):
-    pass
