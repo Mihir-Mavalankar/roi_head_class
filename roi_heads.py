@@ -35,7 +35,7 @@ def fastrcnn_loss(class_logits, box_regression, labels, regression_targets):
 
     classification_loss = F.cross_entropy(class_logits, labels)
 
-    loss_attr = F.cross_entropy(labels, labels)
+    loss_attr = F.cross_entropy(class_logits, labels)
     # get indices that correspond to the regression targets for
     # the corresponding ground truth labels, to be used with
     # advanced indexing
